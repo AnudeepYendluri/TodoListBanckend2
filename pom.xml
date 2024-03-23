@@ -27,10 +27,18 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		<dependency>
+    		<groupId>org.projectlombok</groupId>
+   			 <artifactId>lombok</artifactId>
+   			 <version>1.18.22</version> <!-- Replace with the latest version -->
+    		<scope>provided</scope>
+		</dependency>
+
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -42,6 +50,12 @@
     		<artifactId>java-jwt</artifactId>
     		<version>3.18.1</version>
 		</dependency>
+	
+		<dependency>
+		    <groupId>org.hibernate.validator</groupId>
+    		<artifactId>hibernate-validator</artifactId>
+    		<version>7.0.2.Final</version> <!-- or the latest version -->
+		</dependency>	
 
 
 		<dependency>
