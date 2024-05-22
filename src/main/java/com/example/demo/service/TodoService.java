@@ -1,19 +1,24 @@
-	package com.example.demo.service;
+package com.example.demo.service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.SearchCriteria;
+import com.example.demo.dto.TodoDTO;
 import com.example.demo.exception.GlobalExceptionHandler.TodoNotFoundException;
+import com.example.demo.mapper.TodoMapper;
 import com.example.demo.model.Todo;
 import com.example.demo.model.User;
 import com.example.demo.repository.TodoRepository;
+import com.example.demo.repository.UserRepository;
 
 @Service
 public class TodoService {
@@ -21,7 +26,13 @@ public class TodoService {
 	@Autowired
 	private TodoRepository todoRepo;	
 	
+	@Autowired
+	private UserRepository userRepo;
 	
+	@Autowired
+	private TodoMapper todoMapper;
+	
+	/*
 	public String addTodo(Todo todo) {
 		
 		try {
@@ -35,7 +46,84 @@ public class TodoService {
 		} catch(Exception e) {
 			throw new RuntimeException("something went wrong " + e.getMessage());
 		}
-	}
+	}  */
+	
+	/*
+	public String addTodo(TodoDTO todoDTO) {
+	    try {
+	        Todo todo = todoMapper.todoDTOtoEntity(todoDTO);
+	        Todo savedTodo = todoRepo.save(todo);
+	        
+	        if (savedTodo != null) {
+	            return "Todo created successfully";
+	        } else {
+	            throw new RuntimeException("Failed to save todo");
+	        }
+	    } catch (Exception e) {
+	        throw new RuntimeException("Something went wrong: " + e.getMessage());
+	    }
+	} */
+	
+	
+	
+	public String addTodo(int userId , TodoDTO todoDTO) {
+		
+		try {
+		
+		User user = userRepo.findById(userId);
+		
+		Todo todo = todoMapper.todoDTOtoEntity(todoDTO);
+		
+		todo.setUser(user);
+		
+		todoRepo.save(todo);
+		
+		if (todo != null) {
+	            return "Todo created successfully";
+	        } else {
+	            throw new RuntimeException("Failed to save todo");
+	        }
+	    } catch (Exception e) {
+	        throw new RuntimeException("Something went wrong: " + e.getMessage());
+	    }
+		
+				
+	} 
+
+
+
+	
+	/*
+	public String addTodo(Todo todo) {
+	    try {
+	        // Extract userId from the todo object
+	        int userId = todo.getUser().getId(); // Assuming user is already set in the Todo object
+	        
+	        // Retrieve the user object from the database using userId
+	        User user = userRepo.findById(userId);
+	        
+	        // Check if user is found
+	        if (user == null) {
+	            throw new RuntimeException("User not found with id: " + userId);
+	        }
+	        
+	        // Set the user object in the todo
+	        todo.setUser(user);
+	        
+	        // Save the todo to the database
+	        Todo savedTodo = todoRepo.save(todo);
+	        
+	        if (savedTodo != null) {
+	            return "Todo created successfully";
+	        } else {
+	            throw new RuntimeException("Failed to save todo");
+	        }
+	    } catch (Exception e) {
+	        throw new RuntimeException("Something went wrong: " + e.getMessage());
+	    }
+	} */
+
+	
 	
 	
 	 public String deleteTodo(int id) {

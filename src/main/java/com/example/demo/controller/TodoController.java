@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.SearchCriteria;
+import com.example.demo.dto.TodoDTO;
 import com.example.demo.exception.GlobalExceptionHandler.TodoNotFoundException;
+import com.example.demo.mapper.TodoMapper;
 import com.example.demo.model.Todo;
 import com.example.demo.model.User;
 import com.example.demo.service.TodoService;
@@ -36,8 +38,9 @@ public class TodoController {
 	@Autowired
 	private TodoService todoService;
 	
+	/*
 	@PostMapping("/addtodo")
-	public ResponseEntity<String> addTodo(@Valid @RequestBody Todo todo , BindingResult bindingResult) {
+	public ResponseEntity<String> addTodo(@Valid @RequestBody TodoDTO todoDTO , BindingResult bindingResult) {
 		
 		if(bindingResult.hasErrors()) {
 			StringBuilder errorMessage = new StringBuilder("validation failed: ");
@@ -48,13 +51,36 @@ public class TodoController {
 		}
 		
 		try {
-		String res = todoService.addTodo(todo);
-		return ResponseEntity.ok(res);
-		} catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+	        String res = todoService.addTodo(todoDTO);
+	        return ResponseEntity.ok(res);
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+	    }
+		
+	}  */
+	
+
+	@PostMapping("/addtodo")
+    public ResponseEntity<String> addTodo(@Valid @RequestParam("userId") int userId, @RequestBody TodoDTO todoDTO , BindingResult bindingResult) {
+       
+		if(bindingResult.hasErrors()) {
+			StringBuilder errorMessage = new StringBuilder("validation failed: ");
+			for(FieldError error : bindingResult.getFieldErrors()) {
+				errorMessage.append(error.getDefaultMessage());
+			}
+			return ResponseEntity.badRequest().body(errorMessage.toString());
 		}
 		
-	}
+		try {
+			
+		
+		String result = todoService.addTodo(userId, todoDTO);
+        return ResponseEntity.ok(result);
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+    } 
+
 	
 	@DeleteMapping("/deletetodo/{id}")
 	public ResponseEntity<String> deleteTodo(@PathVariable int id) {
@@ -76,7 +102,7 @@ public class TodoController {
 			return ResponseEntity.status(500).body(null);
 		}
 	}  
-	
+		
 	/*
 	
 	@GetMapping("/getalltodo")
@@ -155,7 +181,7 @@ public class TodoController {
         }
     } 
 	
-	/*
+	/*	
 	@PostMapping("/todos")
     public ResponseEntity<List<Todo>> searchTodos(@RequestBody SearchCriteria searchCriteria) {
         try {
@@ -174,4 +200,4 @@ public class TodoController {
 	
 		
 		
-	}
+}

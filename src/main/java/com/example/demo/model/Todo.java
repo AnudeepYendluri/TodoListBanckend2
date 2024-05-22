@@ -21,10 +21,12 @@ public class Todo {
 	private int id;
 	@NotBlank(message = "Title cannot be blank")
 	private String title;
-	@NotBlank(message = "Description cannot be blank")
+	@NotBlank(message = "Description cannot be blank")	
 	private String description;
 	@NotNull(message = "completed status cannot be null")	
 	private boolean completed;
+	
+	private String priority;
 	
 	
 	@ManyToOne
